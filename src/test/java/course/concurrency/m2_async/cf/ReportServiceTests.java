@@ -1,7 +1,6 @@
 package course.concurrency.m2_async.cf;
 
-import course.concurrency.m2_async.loadTest.ReportServiceCF;
-import course.concurrency.m2_async.loadTest.ReportServiceExecutors;
+import course.concurrency.m2_async.loadTest.ReportServiceVirtual;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -12,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 public class ReportServiceTests {
 
 //    private ReportServiceExecutors reportService = new ReportServiceExecutors();
-    private ReportServiceCF reportService = new ReportServiceCF();
-//    private ReportServiceVirtual reportService = new ReportServiceVirtual();
+//    private ReportServiceCF reportService = new ReportServiceCF();
+    private ReportServiceVirtual reportService = new ReportServiceVirtual();
 
     @Test
     public void testMultipleTasks() throws InterruptedException {

@@ -15,12 +15,14 @@ public class AuctionTests {
     @Suite
     @IncludeTags("pessimistic")
     @SelectPackages("course.concurrency.m3_shared.auction")
-    public static class PessimisticSuite {}
+    public static class PessimisticSuite {
+    }
 
     @Suite
     @IncludeTags("optimistic")
     @SelectPackages("course.concurrency.m3_shared.auction")
-    public static class OptimisticSuite {}
+    public static class OptimisticSuite {
+    }
 
     private static final int TEST_COUNT = 10;
     private static final ExecutionStatistics stat = new ExecutionStatistics();
@@ -36,8 +38,7 @@ public class AuctionTests {
     public void setup() {
         notifier = new Notifier();
         pessimistic = new AuctionPessimistic(notifier);
-        optimistic = new AuctionOptimistic
-                (notifier);
+        optimistic = new AuctionOptimistic(notifier);
     }
 
     @AfterEach
@@ -96,7 +97,8 @@ public class AuctionTests {
             executor.submit(() -> {
                 try {
                     latch.await();
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
 
                 for (int it = 0; it < iterations; it++) {
                     Bid bid = bidQueue.poll();
@@ -122,7 +124,7 @@ public class AuctionTests {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         BlockingQueue<Bid> incBidQueue = new LinkedBlockingQueue<>();
-        LongStream.range(0, iterations*2).boxed().forEach(i -> incBidQueue.offer(new Bid(i, i, i)));
+        LongStream.range(0, iterations * 2).boxed().forEach(i -> incBidQueue.offer(new Bid(i, i, i)));
 
         for (int i = 0; i < iterations; i++) {
             CountDownLatch startAuctionTasksLatch = new CountDownLatch(1);
@@ -133,14 +135,16 @@ public class AuctionTests {
             executor.submit(() -> {
                 try {
                     startAuctionTasksLatch.await();
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
                 auction.propose(bid1);
                 auctionTasksDoneLatch.countDown();
             });
             executor.submit(() -> {
                 try {
                     startAuctionTasksLatch.await();
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
                 auction.propose(bid2);
                 auctionTasksDoneLatch.countDown();
             });
