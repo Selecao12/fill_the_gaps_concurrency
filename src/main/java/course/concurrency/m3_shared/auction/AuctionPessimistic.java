@@ -8,7 +8,6 @@ public class AuctionPessimistic implements Auction {
     private final ReentrantReadWriteLock.ReadLock readLock;
     private final ReentrantReadWriteLock.WriteLock writeLock;
 
-
     private Notifier notifier;
 
     public AuctionPessimistic(Notifier notifier) {
