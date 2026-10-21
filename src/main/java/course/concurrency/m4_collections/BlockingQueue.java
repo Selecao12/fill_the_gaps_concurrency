@@ -4,6 +4,7 @@ import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
 import java.util.ArrayDeque;
+import java.util.Objects;
 import java.util.Queue;
 
 public class BlockingQueue<T> {
@@ -11,31 +12,31 @@ public class BlockingQueue<T> {
     private static final Logger log = LoggerFactory.getLogger(BlockingQueue.class);
 
     private final Queue<T> innerQueue;
-    private final int size;
+    private final int capacity;
 
     private final Object lock = new Object();
 
-    public BlockingQueue(int size) {
-        this.size = size;
-        innerQueue = new ArrayDeque<>(size);
+    public BlockingQueue(int capacity) {
+        if (capacity <= 0) throw new IllegalArgumentException();
+        this.capacity = capacity;
+        innerQueue = new ArrayDeque<>();
     }
 
-    public int getSize() {
+    public int size() {
         synchronized (lock) {
             return innerQueue.size();
         }
     }
 
-    public T get() {
+    public int capacity() {
+        return capacity;
+    }
+
+    public T dequeue() throws InterruptedException {
         T value;
         synchronized (lock) {
             while (innerQueue.isEmpty()) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    System.out.println("Consumer thread was interrupted");
-                    Thread.currentThread().interrupt();
-                }
+                lock.wait();
             }
             value = innerQueue.remove();
             System.out.println("get - queue size: " + innerQueue.size());
@@ -44,15 +45,11 @@ public class BlockingQueue<T> {
         return value;
     }
 
-    public void add(T value) {
+    public void enqueue(T value) throws InterruptedException {
+        Objects.requireNonNull(value);
         synchronized (lock) {
-            while (innerQueue.size() == size) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    System.out.println("Producer thread was interrupted");
-                    Thread.currentThread().interrupt();
-                }
+            while (innerQueue.size() == capacity) {
+                lock.wait();
             }
             innerQueue.add(value);
             System.out.println("add - queue size: " + innerQueue.size());
