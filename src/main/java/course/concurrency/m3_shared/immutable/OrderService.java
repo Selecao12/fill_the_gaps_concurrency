@@ -22,7 +22,7 @@ public class OrderService {
         return id;
     }
 
-    public void updatePaymentInfo(long orderId, PaymentInfo paymentInfo) {
+    public synchronized void updatePaymentInfo(long orderId, PaymentInfo paymentInfo) {
         currentOrders.computeIfPresent(orderId, (id, order) -> {
             var value = order.withPaymentInfo(paymentInfo);
             if (value.checkStatus()) {
@@ -32,7 +32,7 @@ public class OrderService {
         });
     }
 
-    public void setPacked(long orderId) {
+    public synchronized void setPacked(long orderId) {
         currentOrders.computeIfPresent(orderId, (id, order) -> {
             var value = order.withPacked();
             if (value.checkStatus()) {
