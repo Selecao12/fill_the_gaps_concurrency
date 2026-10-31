@@ -6,11 +6,11 @@ public class ThreadPoolTask {
 
     // Task #1
     public ThreadPoolExecutor getLifoExecutor() {
-        return null;
+        return new LifoExecutor();
     }
 
     // Task #2
     public ThreadPoolExecutor getRejectExecutor() {
-        return null;
+        return new RejectExecutor();
     }
 }
